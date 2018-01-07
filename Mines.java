@@ -1,5 +1,6 @@
 package mines;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Mines {
@@ -50,11 +51,13 @@ public class Mines {
 	 * 
 	 */
 
+	/*
 	static int width;
 	static int height;
 	static int mines;
 
 	static char board[][][];
+	*/
 
 	static int x = 0;
 	static int y = 0;
@@ -62,51 +65,50 @@ public class Mines {
 	static Scanner scan = new Scanner(System.in);
 
 	public static void main(String[] args) {
+		
+		// Asking dimensions.
+		System.out.println("Please enter the Width of the Board");
+		int width = scan.nextInt();
 
-		initBoard();
-		populateBoardManual();
-		printBoard(0);
+		System.out.println("Please enter the Height of the Board");
+		int height = scan.nextInt();
+
+		System.out.println("Please enter the Number of Mines");
+		int mineCount = scan.nextInt();
+
+		char[][] board = new char[height][width];
+		int[][] mineCoordinates = populateMines(mineCount, height, width);
+	
+		printBoard();
 
 		while (true) {
 			play();
 			win();
 		}
-
 	}
-
-	public static void initBoard() {
-
-		// asking for the board dimensions, and number of mines
-
-		System.out.println("Please enter the Width of the Board");
-		width = scan.nextInt();
-
-		System.out.println("Please enter the Height of the Board");
-		height = scan.nextInt();
-
-		System.out.println("Please enter the Number of Mines");
-		mines = scan.nextInt();
-
-		height += 2;
-		width += 2;
-
-		board = new char[2][height][width];
-
-		// initialising the board
 	
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				board[0][i][j] = '-';
-				board[1][i][j] = '-';
-				if (i == 0 || j == 0 || i == height - 1 || j == height - 1) {
-					board[0][i][j] = 'X';
-					board[1][i][j] = 'X';
-				}
-			}
+	public static int[][] populateMines(int mineCount, int height, int width) {
+		int[][] mines = new int[mineCount][2];
+		Random rand = new Random();
+		
+		for(int i = 0; i < mineCount; i++) {
+			mines[i] = generateMine(width, height, mines);
 		}
+		
+		return mines;
+	}
+	
+	public static int[] generateMine(int x, int y, int[] existingCoords) {
+		let coords = [rand.nextInt(width - 1) + 1, rand.nextInt(height - 1) + 1];
+		
+		if(Arrays.asList(existingCoords).contains(coords)) {
+			coords = generateCoordinates(x, y, exitingCoords);
+		}
+		
+		return coords;
 	}
 
-	public static void printBoard(int n) {
+	public static void printBoard() {
 
 		System.out.println();
 		
@@ -143,25 +145,7 @@ public class Mines {
 
 	}
 
-	public static void populateBoardManual() {
-
-		for (int i = 0; i < mines; i++) {
-			System.out.println("Populating mine number " + (i + 1));
-
-			System.out.println("Please enter the x coordinate");
-			x = scan.nextInt();
-
-			System.out.println("Please enter the y coordinate");
-			y = scan.nextInt();
-
-			board[1][x][y] = 'B';
-
-			System.out.println("the bomb has been placed at " + x + " " + y + " and has value " + board[1][x][y]);
-
-			printBoard(1);
-		}
-
-	}
+	
 
 	
 	public static void minesF(int m, int n) {
@@ -246,20 +230,24 @@ public class Mines {
 		System.out.println("Please enter the y coordinate");
 		y = scan.nextInt();
 
-		if (x < 1 || x > width - 2 || y < 1 || y > height - 2) {
+		
+
+		board[x][y] = 'F';
+
+		printBoard(0);
+
+	}
+	
+	public static boolean isFlagable(int x, int y, int[] board) {
+		if (x < 1 || x > width || y < 1 || y > height) {
 			System.out.println("Your coordinates are out of bounds");
 			return;
 		}
 		
-		if (board[0][x][y] == 'F') {
+		if (board[x][y] == 'F') {
 			System.out.println("You have already flagged this square.");
 			return;
 		}
-
-		board[0][x][y] = 'F';
-
-		printBoard(0);
-
 	}
 
 	public static void play() {
