@@ -10,4 +10,6 @@ javac Mines.java
 
 Running
 
+To run the program execute the following command:
+
 java Mines
